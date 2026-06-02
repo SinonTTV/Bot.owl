@@ -166,7 +166,7 @@ export default function Layout() {
             <Route path="/modules" element={<ModulesPage />} />
             <Route path="/terms"   element={<TermsPage />} />
             <Route path="/privacy"       element={<PrivacyPage />} />
-            <Route path="/auth-callback" element={<AuthCallback />} />
+            <Route path="/callback" element={<AuthCallback />} />
           </Routes>
         </main>
         <Footer />

@@ -8,7 +8,7 @@ export default defineConfig({
     // Браузер думает что это localhost — куки работают
     proxy: {
       '/v3': {
-        target: 'http://api.owlvision.app',
+        target: 'https://api.owlvision.app',
         changeOrigin: true,
         secure: false,
       }
