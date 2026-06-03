@@ -284,11 +284,11 @@ const LANG: Lang = 'en'
 // ─── Setting controls ──────────────────────────────────────────────────────────
 
 function SelectSetting({
-  setting,
-  initialValue,
-  selectedGuildId,
-  onSaveSuccess,
-}: {
+                         setting,
+                         initialValue,
+                         selectedGuildId,
+                         onSaveSuccess,
+                       }: {
   setting: Setting
   initialValue: string | number
   selectedGuildId: string
@@ -312,7 +312,7 @@ function SelectSetting({
         'bitrate': 'BITRATE'
       }
       const field = fieldMap[setting.id] || setting.id.toUpperCase()
-      
+
       const res = await fetch(`${API_BASE}/v3/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -340,49 +340,49 @@ function SelectSetting({
   }
 
   return (
-    <div className="setting-row">
-      <div className="setting-info">
-        <div className="setting-label">{setting.label[LANG]}</div>
-        <div className="setting-desc">{setting.description[LANG]}</div>
-        {selected?.description && (
-          <div className="setting-hint">↳ {selected.description[LANG]}</div>
-        )}
+      <div className="setting-row">
+        <div className="setting-info">
+          <div className="setting-label">{setting.label[LANG]}</div>
+          <div className="setting-desc">{setting.description[LANG]}</div>
+          {selected?.description && (
+              <div className="setting-hint">↳ {selected.description[LANG]}</div>
+          )}
+        </div>
+        <div className="setting-control">
+          <select
+              className="setting-select"
+              value={String(value)}
+              onChange={e => {
+                const opt = setting.options!.find(o => String(o.value) === e.target.value)
+                setValue(opt ? opt.value : e.target.value)
+                setSaved(false)
+              }}
+              disabled={saving}
+          >
+            {setting.options!.map(opt => (
+                <option key={String(opt.value)} value={String(opt.value)}>
+                  {opt.label[LANG]}
+                </option>
+            ))}
+          </select>
+          <button
+              className={`setting-save-btn${saved ? ' setting-save-btn--saved' : ''}`}
+              onClick={handleSave}
+              disabled={saving || String(value) === String(initialValue)}
+          >
+            {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save'}
+          </button>
+        </div>
       </div>
-      <div className="setting-control">
-        <select
-          className="setting-select"
-          value={String(value)}
-          onChange={e => {
-            const opt = setting.options!.find(o => String(o.value) === e.target.value)
-            setValue(opt ? opt.value : e.target.value)
-            setSaved(false)
-          }}
-          disabled={saving}
-        >
-          {setting.options!.map(opt => (
-            <option key={String(opt.value)} value={String(opt.value)}>
-              {opt.label[LANG]}
-            </option>
-          ))}
-        </select>
-        <button
-          className={`setting-save-btn${saved ? ' setting-save-btn--saved' : ''}`}
-          onClick={handleSave}
-          disabled={saving || String(value) === String(initialValue)}
-        >
-          {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save'}
-        </button>
-      </div>
-    </div>
   )
 }
 
 function NumberSetting({
-  setting,
-  initialValue,
-  selectedGuildId,
-  onSaveSuccess,
-}: {
+                         setting,
+                         initialValue,
+                         selectedGuildId,
+                         onSaveSuccess,
+                       }: {
   setting: Setting
   initialValue: number
   selectedGuildId: string
@@ -432,50 +432,50 @@ function NumberSetting({
   }
 
   return (
-    <div className="setting-row">
-      <div className="setting-info">
-        <div className="setting-label">{setting.label[LANG]}</div>
-        <div className="setting-desc">{setting.description[LANG]}</div>
-      </div>
-      <div className="setting-control setting-control--number">
-        <div className="setting-number-wrap">
-          <input
-            type="range"
-            className="setting-range"
-            min={setting.min}
-            max={setting.max}
-            step={setting.step}
-            value={value}
-            onChange={e => { setValue(Number(e.target.value)); setSaved(false) }}
-            disabled={saving}
-          />
-          <input
-            type="number"
-            className="setting-number-input"
-            min={setting.min}
-            max={setting.max}
-            step={setting.step}
-            value={value}
-            onChange={e => { setValue(Number(e.target.value)); setSaved(false) }}
-            disabled={saving}
-          />
+      <div className="setting-row">
+        <div className="setting-info">
+          <div className="setting-label">{setting.label[LANG]}</div>
+          <div className="setting-desc">{setting.description[LANG]}</div>
         </div>
-        <button
-          className={`setting-save-btn${saved ? ' setting-save-btn--saved' : ''}`}
-          onClick={handleSave}
-          disabled={saving || value === initialValue}
-        >
-          {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save'}
-        </button>
+        <div className="setting-control setting-control--number">
+          <div className="setting-number-wrap">
+            <input
+                type="range"
+                className="setting-range"
+                min={setting.min}
+                max={setting.max}
+                step={setting.step}
+                value={value}
+                onChange={e => { setValue(Number(e.target.value)); setSaved(false) }}
+                disabled={saving}
+            />
+            <input
+                type="number"
+                className="setting-number-input"
+                min={setting.min}
+                max={setting.max}
+                step={setting.step}
+                value={value}
+                onChange={e => { setValue(Number(e.target.value)); setSaved(false) }}
+                disabled={saving}
+            />
+          </div>
+          <button
+              className={`setting-save-btn${saved ? ' setting-save-btn--saved' : ''}`}
+              onClick={handleSave}
+              disabled={saving || value === initialValue}
+          >
+            {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save'}
+          </button>
+        </div>
       </div>
-    </div>
   )
 }
 
 function ActionSetting({
-  setting,
-  selectedGuildId,
-}: {
+                         setting,
+                         selectedGuildId,
+                       }: {
   setting: Setting
   selectedGuildId: string
 }) {
@@ -518,41 +518,41 @@ function ActionSetting({
   }
 
   return (
-    <div className={`setting-row setting-row--action${isDangerous ? ' setting-row--dangerous' : ''}`}>
-      <div className="setting-info">
-        <div className="setting-label">
-          {isDangerous && <span className="setting-danger-icon">⚠</span>}
-          {setting.label[LANG]}
+      <div className={`setting-row setting-row--action${isDangerous ? ' setting-row--dangerous' : ''}`}>
+        <div className="setting-info">
+          <div className="setting-label">
+            {isDangerous && <span className="setting-danger-icon">⚠</span>}
+            {setting.label[LANG]}
+          </div>
+          <div className="setting-desc">{setting.description[LANG]}</div>
         </div>
-        <div className="setting-desc">{setting.description[LANG]}</div>
+        <div className="setting-control setting-control--action">
+          <input
+              type="text"
+              className="setting-text-input"
+              placeholder="User ID"
+              value={userId}
+              onChange={e => { setUserId(e.target.value); setConfirm(false) }}
+              disabled={loading}
+          />
+          <button
+              className={`setting-action-btn${isDangerous ? ' setting-action-btn--dangerous' : ''}${done ? ' setting-action-btn--done' : ''}`}
+              onClick={handleClick}
+              disabled={!userId.trim() || loading}
+          >
+            {loading ? 'Processing...' : done ? '✓ Done' : confirm ? 'Confirm?' : setting.label[LANG]}
+          </button>
+        </div>
       </div>
-      <div className="setting-control setting-control--action">
-        <input
-          type="text"
-          className="setting-text-input"
-          placeholder="User ID"
-          value={userId}
-          onChange={e => { setUserId(e.target.value); setConfirm(false) }}
-          disabled={loading}
-        />
-        <button
-          className={`setting-action-btn${isDangerous ? ' setting-action-btn--dangerous' : ''}${done ? ' setting-action-btn--done' : ''}`}
-          onClick={handleClick}
-          disabled={!userId.trim() || loading}
-        >
-          {loading ? 'Processing...' : done ? '✓ Done' : confirm ? 'Confirm?' : setting.label[LANG]}
-        </button>
-      </div>
-    </div>
   )
 }
 
 function SettingControl({
-  setting,
-  initialValue,
-  selectedGuildId,
-  onSaveSuccess,
-}: {
+                          setting,
+                          initialValue,
+                          selectedGuildId,
+                          onSaveSuccess,
+                        }: {
   setting: Setting
   initialValue: any
   selectedGuildId: string
@@ -560,30 +560,30 @@ function SettingControl({
 }) {
   if (setting.type === 'select') {
     return (
-      <SelectSetting
-        setting={setting}
-        initialValue={initialValue}
-        selectedGuildId={selectedGuildId}
-        onSaveSuccess={onSaveSuccess}
-      />
+        <SelectSetting
+            setting={setting}
+            initialValue={initialValue}
+            selectedGuildId={selectedGuildId}
+            onSaveSuccess={onSaveSuccess}
+        />
     )
   }
   if (setting.type === 'number') {
     return (
-      <NumberSetting
-        setting={setting}
-        initialValue={Number(initialValue)}
-        selectedGuildId={selectedGuildId}
-        onSaveSuccess={onSaveSuccess}
-      />
+        <NumberSetting
+            setting={setting}
+            initialValue={Number(initialValue)}
+            selectedGuildId={selectedGuildId}
+            onSaveSuccess={onSaveSuccess}
+        />
     )
   }
   if (setting.type === 'action') {
     return (
-      <ActionSetting
-        setting={setting}
-        selectedGuildId={selectedGuildId}
-      />
+        <ActionSetting
+            setting={setting}
+            selectedGuildId={selectedGuildId}
+        />
     )
   }
   return null
@@ -607,44 +607,46 @@ export default function ModulesPage() {
   useEffect(() => {
     setLoading(true)
     fetch(AUTH.me, { credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(userData => {
-        setUser(userData)
-        if (userData) {
-          fetch(AUTH.guilds, { credentials: 'include' })
-            .then(r => r.ok ? r.json() : [])
-            .then(guildsData => {
-              setGuilds(guildsData)
-              
-              // Filter manageable guilds
-              const manageable = guildsData.filter((g: DiscordGuild) => {
-                if (g.owner) return true
-                try {
-                  const perm = BigInt(g.permissions)
-                  return (perm & 0x8n) === 0x8n || (perm & 0x20n) === 0x20n
-                } catch {
-                  return false
-                }
-              })
+        .then(r => r.ok ? r.json() : null)
+        .then(userData => {
+          setUser(userData)
+          if (userData) {
+            fetch(AUTH.guilds, { credentials: 'include' })
+                .then(r => r.ok ? r.json() : [])
+                .then(guildsData => {
+                  setGuilds(guildsData)
 
-              if (manageable.length > 0) {
-                setSelectedGuild(manageable[0])
-              } else {
-                setLoading(false)
-              }
-            })
-            .catch(() => {
-              setGuilds([])
-              setLoading(false)
-            })
-        } else {
+                  // Filter manageable guilds
+                  const manageable = guildsData.filter((g: DiscordGuild) => {
+                    if (g.owner) return true
+                    try {
+                      const perm = BigInt(g.permissions)
+                      return (perm & 0x8n) === 0x8n || (perm & 0x20n) === 0x20n
+                    } catch {
+                      return false
+                    }
+                  })
+
+                  if (manageable.length > 0) {
+                    const savedId = localStorage.getItem('owlbot_guild_id')
+                    const saved = manageable.find((g: DiscordGuild) => g.id === savedId)
+                    setSelectedGuild(saved ?? manageable[0])
+                  } else {
+                    setLoading(false)
+                  }
+                })
+                .catch(() => {
+                  setGuilds([])
+                  setLoading(false)
+                })
+          } else {
+            setLoading(false)
+          }
+        })
+        .catch(() => {
+          setUser(null)
           setLoading(false)
-        }
-      })
-      .catch(() => {
-        setUser(null)
-        setLoading(false)
-      })
+        })
   }, [])
 
   // 2. Fetch or Init Guild Settings when Selected Guild changes
@@ -656,40 +658,40 @@ export default function ModulesPage() {
 
     setLoading(true)
     fetch(`${AUTH.settings}?guildId=${selectedGuild.id}`, { credentials: 'include' })
-      .then(res => {
-        if (!res.ok) throw new Error('Need init')
-        return res.json()
-      })
-      .then(data => {
-        setSettings(data)
-        setLoading(false)
-      })
-      .catch(() => {
-        // Initialize settings with defaults
-        fetch(AUTH.settings, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            guildId: selectedGuild.id,
-            namingType: 'nickname',
-            bitrate: 64000,
-            usersLimit: 0,
-            experienceMultiplier: 1.0
-          }),
-          credentials: 'include'
+        .then(res => {
+          if (!res.ok) throw new Error('Need init')
+          return res.json()
         })
-        .then(res => res.ok ? res.json() : null)
         .then(data => {
-          if (data) {
-            setSettings(data)
-          }
+          setSettings(data)
           setLoading(false)
         })
-        .catch(err => {
-          console.error('Failed to init settings:', err)
-          setLoading(false)
+        .catch(() => {
+          // Initialize settings with defaults
+          fetch(AUTH.settings, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              guildId: selectedGuild.id,
+              namingType: 'nickname',
+              bitrate: 64000,
+              usersLimit: 0,
+              experienceMultiplier: 1.0
+            }),
+            credentials: 'include'
+          })
+              .then(res => res.ok ? res.json() : null)
+              .then(data => {
+                if (data) {
+                  setSettings(data)
+                }
+                setLoading(false)
+              })
+              .catch(err => {
+                console.error('Failed to init settings:', err)
+                setLoading(false)
+              })
         })
-      })
   }, [selectedGuild])
 
   const handleLogin = () => {
@@ -743,146 +745,147 @@ export default function ModulesPage() {
   // 3. Render Login CTA if not Authenticated
   if (!user && !loading) {
     return (
-      <div className="modules-page modules-page--center">
-        <div className="unauth-container">
-          <div className="unauth-icon">🔒</div>
-          <h1 className="unauth-title">Authentication Required</h1>
-          <p className="unauth-desc">Please sign in with Discord to access and configure your server's module settings.</p>
-          <button className="btn btn-discord btn-unauth-login" onClick={handleLogin}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '8px' }}>
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-            </svg>
-            Sign in with Discord
-          </button>
+        <div className="modules-page modules-page--center">
+          <div className="unauth-container">
+            <div className="unauth-icon">🔒</div>
+            <h1 className="unauth-title">Authentication Required</h1>
+            <p className="unauth-desc">Please sign in with Discord to access and configure your server's module settings.</p>
+            <button className="btn btn-discord btn-unauth-login" onClick={handleLogin}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '8px' }}>
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+              </svg>
+              Sign in with Discord
+            </button>
+          </div>
         </div>
-      </div>
     )
   }
 
   return (
-    <div className="modules-page">
-      <aside className="modules-sidebar">
-        <div className="sidebar-header">
-          <div className="page-tag">// MODULES</div>
-        </div>
+      <div className="modules-page">
+        <aside className="modules-sidebar">
+          <div className="sidebar-header">
+            <div className="page-tag">// MODULES</div>
+          </div>
 
-        {/* Guild Selection Dropdown */}
-        {user && manageableGuilds.length > 0 && (
-          <div className="guild-selector">
-            <button className="guild-selector-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-              {selectedGuild ? (
-                <>
-                  {selectedGuild.icon ? (
-                    <img
-                      src={`https://cdn.discordapp.com/icons/${selectedGuild.id}/${selectedGuild.icon}.png?size=64`}
-                      alt={selectedGuild.name}
-                      className="guild-icon"
-                    />
+          {/* Guild Selection Dropdown */}
+          {user && manageableGuilds.length > 0 && (
+              <div className="guild-selector">
+                <button className="guild-selector-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                  {selectedGuild ? (
+                      <>
+                        {selectedGuild.icon ? (
+                            <img
+                                src={`https://cdn.discordapp.com/icons/${selectedGuild.id}/${selectedGuild.icon}.png?size=64`}
+                                alt={selectedGuild.name}
+                                className="guild-icon"
+                            />
+                        ) : (
+                            <div className="guild-icon-placeholder">
+                              {selectedGuild.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                            </div>
+                        )}
+                        <span className="guild-name">{selectedGuild.name}</span>
+                      </>
                   ) : (
-                    <div className="guild-icon-placeholder">
-                      {selectedGuild.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
-                    </div>
+                      <span className="guild-placeholder">Select Server</span>
                   )}
-                  <span className="guild-name">{selectedGuild.name}</span>
-                </>
-              ) : (
-                <span className="guild-placeholder">Select Server</span>
-              )}
-              <span className="guild-chevron" style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
-            </button>
-            {dropdownOpen && (
-              <div className="guild-dropdown">
-                {manageableGuilds.map(g => (
-                  <button
-                    key={g.id}
-                    className={`guild-dropdown-item${selectedGuild?.id === g.id ? ' guild-dropdown-item--active' : ''}`}
-                    onClick={() => {
-                      setSelectedGuild(g)
-                      setDropdownOpen(false)
-                    }}
-                  >
-                    {g.icon ? (
-                      <img
-                        src={`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64`}
-                        alt={g.name}
-                        className="guild-icon"
-                      />
-                    ) : (
-                      <div className="guild-icon-placeholder">
-                        {g.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
-                    <span className="guild-dropdown-name">{g.name}</span>
-                  </button>
-                ))}
+                  <span className="guild-chevron" style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+                </button>
+                {dropdownOpen && (
+                    <div className="guild-dropdown">
+                      {manageableGuilds.map(g => (
+                          <button
+                              key={g.id}
+                              className={`guild-dropdown-item${selectedGuild?.id === g.id ? ' guild-dropdown-item--active' : ''}`}
+                              onClick={() => {
+                                setSelectedGuild(g)
+                                localStorage.setItem('owlbot_guild_id', g.id)
+                                setDropdownOpen(false)
+                              }}
+                          >
+                            {g.icon ? (
+                                <img
+                                    src={`https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64`}
+                                    alt={g.name}
+                                    className="guild-icon"
+                                />
+                            ) : (
+                                <div className="guild-icon-placeholder">
+                                  {g.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                                </div>
+                            )}
+                            <span className="guild-dropdown-name">{g.name}</span>
+                          </button>
+                      ))}
+                    </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+          )}
 
-        <nav className="sidebar-nav">
-          {modules.map((m) => (
-            <button
-              key={m.key}
-              className={`sidebar-item${active === m.key ? ' sidebar-item--active' : ''} sidebar-item--${m.status}`}
-              onClick={() => setActive(m.key)}
-            >
-              <span className="sidebar-item-icon">{m.icon}</span>
-              <span className="sidebar-item-name">{m.name}</span>
-              {m.status === 'beta' && <span className="sidebar-badge sidebar-badge--beta">Beta</span>}
-              {m.status === 'soon' && <span className="sidebar-badge sidebar-badge--soon">Soon</span>}
-            </button>
-          ))}
-        </nav>
-      </aside>
+          <nav className="sidebar-nav">
+            {modules.map((m) => (
+                <button
+                    key={m.key}
+                    className={`sidebar-item${active === m.key ? ' sidebar-item--active' : ''} sidebar-item--${m.status}`}
+                    onClick={() => setActive(m.key)}
+                >
+                  <span className="sidebar-item-icon">{m.icon}</span>
+                  <span className="sidebar-item-name">{m.name}</span>
+                  {m.status === 'beta' && <span className="sidebar-badge sidebar-badge--beta">Beta</span>}
+                  {m.status === 'soon' && <span className="sidebar-badge sidebar-badge--soon">Soon</span>}
+                </button>
+            ))}
+          </nav>
+        </aside>
 
-      <main className="modules-content">
-        {loading ? (
-          <div className="loading-placeholder">
-            <div className="spinner" />
-            <p>Loading settings...</p>
-          </div>
-        ) : user && manageableGuilds.length === 0 ? (
-          <div className="unauth-container">
-            <div className="unauth-icon">🤖</div>
-            <h1 className="unauth-title">No Servers Found</h1>
-            <p className="unauth-desc">You do not have administrative permissions on any servers, or the bot has not been added to them yet.</p>
-            <a href={`https://discord.com/oauth2/authorize?client_id=1234567890&permissions=8&scope=bot`} target="_blank" rel="noopener noreferrer" className="btn btn-discord btn-unauth-login">
-              Invite Bot to Server
-            </a>
-          </div>
-        ) : (
-          <div className="module-detail">
-            <div className="module-detail-header">
-              <div className="module-detail-icon">{current.icon}</div>
-              <div>
-                <h1 className="module-detail-title">{current.name}</h1>
-                <span className={`module-status module-status--${current.status}`}>
+        <main className="modules-content">
+          {loading ? (
+              <div className="loading-placeholder">
+                <div className="spinner" />
+                <p>Loading settings...</p>
+              </div>
+          ) : user && manageableGuilds.length === 0 ? (
+              <div className="unauth-container">
+                <div className="unauth-icon">🤖</div>
+                <h1 className="unauth-title">No Servers Found</h1>
+                <p className="unauth-desc">You do not have administrative permissions on any servers, or the bot has not been added to them yet.</p>
+                <a href={`https://discord.com/oauth2/authorize?client_id=1234567890&permissions=8&scope=bot`} target="_blank" rel="noopener noreferrer" className="btn btn-discord btn-unauth-login">
+                  Invite Bot to Server
+                </a>
+              </div>
+          ) : (
+              <div className="module-detail">
+                <div className="module-detail-header">
+                  <div className="module-detail-icon">{current.icon}</div>
+                  <div>
+                    <h1 className="module-detail-title">{current.name}</h1>
+                    <span className={`module-status module-status--${current.status}`}>
                   {statusLabel[current.status]}
                 </span>
-              </div>
-            </div>
-
-            <div className="module-detail-body">
-              {data && selectedGuild ? (
-                <div className="settings-list">
-                  {data.settings.map(setting => (
-                    <SettingControl
-                      key={setting.id}
-                      setting={setting}
-                      initialValue={getSettingValue(setting.id, setting.default)}
-                      selectedGuildId={selectedGuild.id}
-                      onSaveSuccess={handleSettingUpdate}
-                    />
-                  ))}
+                  </div>
                 </div>
-              ) : (
-                <p className="module-detail-placeholder">Select a server to configure module settings.</p>
-              )}
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
+
+                <div className="module-detail-body">
+                  {data && selectedGuild ? (
+                      <div className="settings-list">
+                        {data.settings.map(setting => (
+                            <SettingControl
+                                key={setting.id}
+                                setting={setting}
+                                initialValue={getSettingValue(setting.id, setting.default)}
+                                selectedGuildId={selectedGuild.id}
+                                onSaveSuccess={handleSettingUpdate}
+                            />
+                        ))}
+                      </div>
+                  ) : (
+                      <p className="module-detail-placeholder">Select a server to configure module settings.</p>
+                  )}
+                </div>
+              </div>
+          )}
+        </main>
+      </div>
   )
 }
