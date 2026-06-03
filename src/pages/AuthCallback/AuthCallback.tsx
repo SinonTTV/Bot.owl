@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
+import { API_BASE } from '../../utils/auth'
 
-const API_BASE = import.meta.env.PROD
-    ? 'https://api.owlvision.app'
-    : ''
 
 export default function AuthCallback() {
     const [status, setStatus] = useState('Authorization in progress...')
