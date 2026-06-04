@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AUTH, API_BASE, openAuthPopup } from '../../utils/auth'
+import { AUTH, API_BASE, apiFetch, openAuthPopup } from '../../utils/auth'
 import './ModulesPage.css'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -313,15 +313,14 @@ function SelectSetting({
       }
       const field = fieldMap[setting.id] || setting.id.toUpperCase()
 
-      const res = await fetch(`${API_BASE}/v3/settings`, {
+      const res = await apiFetch(`${API_BASE}/v3/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           guildId: selectedGuildId,
           field: field,
           value: String(value)
-        }),
-        credentials: 'include'
+        })
       })
 
       if (res.ok) {
@@ -405,15 +404,14 @@ function NumberSetting({
       }
       const field = fieldMap[setting.id] || setting.id.toUpperCase()
 
-      const res = await fetch(`${API_BASE}/v3/settings`, {
+      const res = await apiFetch(`${API_BASE}/v3/settings`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           guildId: selectedGuildId,
           field: field,
           value: String(value)
-        }),
-        credentials: 'include'
+        })
       })
 
       if (res.ok) {
@@ -492,14 +490,13 @@ function ActionSetting({
     setLoading(true)
 
     try {
-      const res = await fetch(`${API_BASE}${setting.http.endpoint}`, {
+      const res = await apiFetch(`${API_BASE}${setting.http.endpoint}`, {
         method: setting.http.method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: userId,
           guildId: selectedGuildId
-        }),
-        credentials: 'include'
+        })
       })
 
       if (res.ok) {
@@ -606,14 +603,14 @@ export default function ModulesPage() {
   // 1. Fetch User and Guilds on Mount
   useEffect(() => {
     setLoading(true)
-    fetch(AUTH.me, { credentials: 'include' })
-        .then(r => r.ok ? r.json() : null)
-        .then(userData => {
+    apiFetch(AUTH.me)
+        .then((r: Response) => r.ok ? r.json() : null)
+        .then((userData: DiscordUser | null) => {
           setUser(userData)
           if (userData) {
-            fetch(AUTH.guilds, { credentials: 'include' })
-                .then(r => r.ok ? r.json() : [])
-                .then(guildsData => {
+            apiFetch(AUTH.guilds)
+                .then((r: Response) => r.ok ? r.json() : [])
+                .then((guildsData: DiscordGuild[]) => {
                   setGuilds(guildsData)
 
                   // Filter manageable guilds
@@ -628,9 +625,7 @@ export default function ModulesPage() {
                   })
 
                   if (manageable.length > 0) {
-                    const savedId = localStorage.getItem('owlbot_guild_id')
-                    const saved = manageable.find((g: DiscordGuild) => g.id === savedId)
-                    setSelectedGuild(saved ?? manageable[0])
+                    setSelectedGuild(manageable[0])
                   } else {
                     setLoading(false)
                   }
@@ -657,7 +652,7 @@ export default function ModulesPage() {
     }
 
     setLoading(true)
-    fetch(`${AUTH.settings}?guildId=${selectedGuild.id}`, { credentials: 'include' })
+    apiFetch(`${AUTH.settings}?guildId=${selectedGuild.id}`)
         .then(res => {
           if (!res.ok) throw new Error('Need init')
           return res.json()
@@ -668,7 +663,7 @@ export default function ModulesPage() {
         })
         .catch(() => {
           // Initialize settings with defaults
-          fetch(AUTH.settings, {
+          apiFetch(AUTH.settings, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -677,11 +672,10 @@ export default function ModulesPage() {
               bitrate: 64000,
               usersLimit: 0,
               experienceMultiplier: 1.0
-            }),
-            credentials: 'include'
+            })
           })
-              .then(res => res.ok ? res.json() : null)
-              .then(data => {
+              .then((res: Response) => res.ok ? res.json() : null)
+              .then((data: Record<string, unknown> | null) => {
                 if (data) {
                   setSettings(data)
                 }
@@ -800,7 +794,6 @@ export default function ModulesPage() {
                               className={`guild-dropdown-item${selectedGuild?.id === g.id ? ' guild-dropdown-item--active' : ''}`}
                               onClick={() => {
                                 setSelectedGuild(g)
-                                localStorage.setItem('owlbot_guild_id', g.id)
                                 setDropdownOpen(false)
                               }}
                           >

@@ -11,13 +11,11 @@ export const AUTH = {
 }
 
 let isRefreshing = false
-let refreshQueue: Array<(success: boolean) => void> = []
+let queue: Array<(ok: boolean) => void> = []
 
 async function tryRefresh(): Promise<boolean> {
   if (isRefreshing) {
-    return new Promise(resolve => {
-      refreshQueue.push(resolve)
-    })
+    return new Promise(resolve => queue.push(resolve))
   }
 
   isRefreshing = true
@@ -27,18 +25,26 @@ async function tryRefresh(): Promise<boolean> {
       method: 'POST',
       credentials: 'include',
     })
+
     const ok = res.ok
-    refreshQueue.forEach(fn => fn(ok))
-    refreshQueue = []
+
+    if (!ok) {
+      openAuthPopup(() => window.location.reload())
+    }
+
+    queue.forEach(fn => fn(ok))
+    queue = []
     isRefreshing = false
     return ok
   } catch {
-    refreshQueue.forEach(fn => fn(false))
-    refreshQueue = []
+    queue.forEach(fn => fn(false))
+    queue = []
     isRefreshing = false
     return false
   }
 }
+
+const NO_REFRESH_URLS = [AUTH.me, AUTH.guilds]
 
 export async function apiFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const opts: RequestInit = { ...options, credentials: 'include' }
@@ -46,6 +52,11 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   const res = await fetch(url, opts)
 
   if (res.status === 401) {
+    const isPassiveCheck = NO_REFRESH_URLS.some(u => url.startsWith(u))
+    if (isPassiveCheck) {
+      return res
+    }
+
     const refreshed = await tryRefresh()
     if (refreshed) {
       return fetch(url, opts)
